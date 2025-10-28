@@ -6,41 +6,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: microsoft/setup-msbuild@v2
-      - name: Compile x86
-        run: msbuild /p:Platform=x86 /p:Configuration=Release
       - name: Compile x64
         run: msbuild /p:Configuration=Release /p:Platform=x64
-      - name: Make Installer (x86)
-        run: iscc.exe ProxyDialogAutoFillerX86.iss
-      - name: Make Installer (x64)
-        run: iscc.exe ProxyDialogAutoFillerX64.iss
+      - name: Make Installer
+        run: iscc.exe ProxyDialogAutoFiller.iss
       - name: Upload Binaries
         uses: actions/upload-artifact@v4
         with:
           name: Binaries
           path: |
             bin/Release/*.exe
-            bin/x64/Release/*.exe
       - name: Upload Installer
         uses: actions/upload-artifact@v4
         with:
           name: Installers
           path: SetupOutput/*.exe
-  assets:
-    runs-on: [ ubuntu-latest ]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build Testing Extensions
-        run: |
-          cp webextensions/edge/manifest.json.dev webextensions/edge/manifest.json
-          make -C webextensions/edge
-      - name: Upload Extensions
-        uses: actions/upload-artifact@v4
-        with:
-          name: WebExtensions
-          path: webextensions/*/*.zip
-      - name: Upload GPO Templates
-        uses: actions/upload-artifact@v4
-        with:
-          name: Templates
-          path: Resources/GPO/**/*.adm*
