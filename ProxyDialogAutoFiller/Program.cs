@@ -17,7 +17,6 @@ namespace ProxyDialogAutoFiller
 {
     class Program
     {
-
         private static Mutex MyMutex { get; } = new Mutex(false, @"ProxyDialogAutoFiller-4DB06AAB-2148-469F-BA51-24E3E73E4C61");
 
         [STAThread]

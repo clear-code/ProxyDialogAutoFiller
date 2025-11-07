@@ -4,8 +4,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6153B03D-CB7F-4096-90BA-CEAD50EE0F54}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{4DB06AAB-2148-469F-BA51-24E3E73E4C61}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>ProxyDialogAutoFiller</RootNamespace>
     <AssemblyName>ProxyDialogAutoFiller</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
@@ -72,6 +72,9 @@
   <PropertyGroup>
     <ApplicationIcon>
     </ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
