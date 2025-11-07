@@ -46,6 +46,9 @@ Source: "bin\Release\ProxyDialogAutoFiller.exe"; DestDir: "{app}\";Flags: ignore
 ;ini
 Source: "Resources\ProxySetting.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
 
+[Icons]
+Name: "{commonstartup}\ProxyDialogAutoFiller"; Filename: "{app}\ProxyDialogAutoFiller.exe"; WorkingDir: "{app}"
+
 [Dirs]
 Name: "{app}";Permissions: users-modify
 
