@@ -2,7 +2,7 @@
 
 ## 概要
 
-Google ChromeおよびMicrosoft Edge上でプロキシーログインのダイアログが表示されたら、自動でキャンセルするWindowsネイティブアプリケーション
+Google ChromeおよびMicrosoft Edge上でプロキシーログインのダイアログが表示されたら、自動でユーザー名とパスワードを入力するWindowsネイティブアプリケーション
 
 ## ビルド方法
 
@@ -18,8 +18,8 @@ Google ChromeおよびMicrosoft Edge上でプロキシーログインのダイ�
 ### ネイティブアプリのインストーラー作成方法
 
 1. ProxyDialogAutoFiller.sln をVisual Studio 2022で開く
-2. 構成Release、プラットフォームx86およびx64でソリューションのビルドを実行する
-3. ProxyDialogAutoFillerX64.iss および ProxyDialogAutoFillerX86.iss をInno Setupで開く
+2. 構成Release、プラットフォームAnyCPUでソリューションのビルドを実行する
+3. ProxyDialogAutoFiller.iss をInno Setupで開く
 4. Build -> Compileからインストーラーをコンパイルする
 5. SetupOutput配下にネイティブアプリのインストーラーが作成される
 
@@ -45,7 +45,7 @@ Google ChromeおよびMicrosoft Edge上でプロキシーログインのダイ�
 
 ## 動作解説
 
-* ProxyDialogAutoFiller.exeは、Google ChromeおよびMicrosoft Edgeのウィンドウを1秒ごとに監視する
+* ProxyDialogAutoFiller.exeは、Google ChromeおよびMicrosoft Edgeのウィンドウを0.5秒ごとに監視する
 * プロキシログインのダイアログが表示されたら、ログイン先のプロキシが設定ファイルに記載されているプロキシのホスト名と一致するか確認する
-  * これはダイアログに表示されているログインしようとしているプロキシ名と比較して確認している
+  * これはダイアログに表示されている、ログインしようとしているプロキシ名と、セクションに記載されているプロキシのホスト名を比較して確認している
 * 自動でユーザー名とパスワードを入力し、ログインする
