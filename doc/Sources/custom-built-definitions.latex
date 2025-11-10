@@ -1,0 +1,21 @@
+% Use listings to solve the layout issue of code blocks
+\usepackage{listings}
+% Disable highlight in code blocks
+\lstdefinestyle{eisvogel_listing_style}{
+    numbers=left,         % 行番号を左に表示
+    basicstyle=\ttfamily, % フォントスタイル
+    breaklines=true,      % 行の折り返し
+    keywordstyle=,        % キーワードのスタイルを無効化
+    identifierstyle=,     % 識別子のスタイルを無効化
+    commentstyle=,        % コメントのスタイルを無効化
+    stringstyle=,         % 文字列のスタイルを無効化
+    frame=single          % 枠線を追加
+}
+\lstset{style=eisvogel_listing_style}
+
+% Additional definition for Undefined control sequence
+\newcommand{\pandocbounded}[1]{%
+  \begin{minipage}{\textwidth}%
+    #1%
+  \end{minipage}%
+}
