@@ -31,10 +31,10 @@ namespace ProxyDialogAutoFiller
                 foreach (var targetDefinition in targetDefinitions)
                 {
                     //ブラウザのプロセスのうち、メインウィンドウがあるものに絞り込み
-                    var filterdElements = Process.GetProcessesByName(targetDefinition.ProcessName).Where(_ => _.MainWindowHandle != IntPtr.Zero);
-                    foreach (var filterdElement in filterdElements)
+                    var filteredElements = Process.GetProcessesByName(targetDefinition.ProcessName).Where(_ => _.MainWindowHandle != IntPtr.Zero);
+                    foreach (var filteredElement in filteredElements)
                     {
-                        var targetPid = filterdElement.Id;
+                        var targetPid = filteredElement.Id;
                         var windowCondition = new AndCondition(
                             new PropertyCondition(AutomationElement.ProcessIdProperty, targetPid),
                             new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Window));
@@ -104,7 +104,7 @@ namespace ProxyDialogAutoFiller
                 {
                     return;
                 }
-                context.Logger.Log($"Found proxy dialog");
+                context.Logger.Log($"Found proxy dialog.");
                 var textTypeDescendants = proxyDialogElement.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Text));
 
                 bool isTargetProxy = false;
@@ -173,29 +173,43 @@ namespace ProxyDialogAutoFiller
                 {
                     return;
                 }
+                Task.Delay(50).Wait();
                 loginButton.Invoke();
-                context.Logger.Log($"Logged in proxy");
-
+                context.Logger.Log($"Click login button.");
                 // プロキシーダイアログが消えていることを確認する。
-                // 最大10秒待つ。
-                for (int i = 0; i < 10; i++)
+                // ユーザー名、パスワードに誤りがあった場合などに、短時間で連続してダイアログの表示とOKが繰り返され、ユーザーが対処できなくなる可能性がある。
+                // そのため、ダイアログが表示されている場合、ここで15秒間待機し、ダイアログが閉じられなかった場合にユーザーがキャンセルや正しいユーザー名
+                // パスワードが入力できるようにする。
+                for (int i = 0; i < 15; i++)
                 {
                     proxyDialogElement = targetRootElement.FindFirst(TreeScope.Descendants, proxyDialogCondition);
                     if (proxyDialogElement == null)
                     {
                         break;
                     }
+                    // ChromeでloginButton.Invoke()の実行までが早すぎて応答しないことがあるので
+                    // ここで一度だけリトライする。
+                    if (i == 0)
+                    {
+                        try
+                        {
+                            Task.Delay(500).Wait();
+                            loginButton.Invoke();
+                            context.Logger.Log($"Retry to click login button.");
+                        }
+                        catch { }
+                    }
                     Task.Delay(1000).Wait();
                 }
 
                 if (proxyDialogElement != null)
                 {
-                    context.Logger.Log($"Dialog not closed");
+                    context.Logger.Log($"Dialog not closed. Maybe failed to login to the proxy.");
                 }
-
-                // ユーザー名、パスワードに誤りがあった場合などに、短時間で連続してダイアログの表示とOKが繰り返され、ユーザーが対処できなくなる可能性がある。
-                // そのため、ここでさらに10秒間待機し、ダイアログが閉じられなかった場合にユーザーがキャンセルや正しいユーザー名、パスワードが入力できるようにする。
-                Task.Delay(10000).Wait();
+                else
+                {
+                    context.Logger.Log($"Success to login to the proxy.");
+                }
             }
             catch (Exception ex)
             {
