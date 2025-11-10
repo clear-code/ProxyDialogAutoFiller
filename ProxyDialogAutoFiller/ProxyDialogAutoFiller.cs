@@ -191,13 +191,11 @@ namespace ProxyDialogAutoFiller
                 if (proxyDialogElement != null)
                 {
                     context.Logger.Log($"Dialog not closed");
-                    return;
                 }
 
-                if (context.Config?.WarningWhenCloseDialog ?? false)
-                {
-                    context.Logger.Log($"Display warning dialog");
-                }
+                // ユーザー名、パスワードに誤りがあった場合などに、短時間で連続してダイアログの表示とOKが繰り返され、ユーザーが対処できなくなる可能性がある。
+                // そのため、ここでさらに10秒間待機し、ダイアログが閉じられなかった場合にユーザーがキャンセルや正しいユーザー名、パスワードが入力できるようにする。
+                Task.Delay(10000).Wait();
             }
             catch (Exception ex)
             {
