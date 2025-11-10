@@ -29,8 +29,6 @@ namespace ProxyDialogAutoFiller
 
     internal class Config
     {
-        public bool IgnoreQueryString = false;
-        public bool WarningWhenCloseDialog = false;
         public List<Section> SectionList = new List<Section>();
     }
 
