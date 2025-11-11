@@ -91,11 +91,12 @@ ProxyDialogAutoFillerを利用するために、別途ランタイムライブ�
 
     ![](user-guide/media/image9.png)
 
-6. インストーラーの実行が完了すると、スタートアッププログラムに`ProxyDialogAutoFiller.exe`が登録されます。
+　　「インストール後にプログラムを起動する」にチェックをすると、「完了」ボタンクリック後に`ProxyDialogAutoFiller.exe`が実行されます。
 
 以上で、インストール作業は完了です。
 
-インストール完了後、端末の再起動やログオンユーザーのサインアウト/サインインをすると、ProxyDialogAutoFiller.exeが自動で起動します。
+インストーラーの実行が完了すると、スタートアッププログラムに`ProxyDialogAutoFiller.exe`が登録されます。
+端末の再起動やログオンユーザーのサインアウト/サインインをすると、`ProxyDialogAutoFiller.exe`が自動で起動するようになります。
 
 \newpage
 # アンインストール手順
@@ -173,7 +174,9 @@ ProxyDialogAutoFillerのインストールをサイレント実行するため�
 
 1. セットアップ用のEXEファイルに「/SP- /VERYSILENT」オプションを付与し実行します。  
   
-    例) ProxyDialogAutoFillerSetup.exe /SP- /VERYSILENT</p>
+    例) ProxyDialogAutoFillerSetup.exe /SP- /VERYSILENT
+
+サイレントインストール完了後、`ProxyDialogAutoFiller.exe`が自動で起動します。
 
 ### 応答ファイルを利用したサイレント インストールの場合
 
@@ -182,6 +185,8 @@ ProxyDialogAutoFillerのインストールをサイレント実行するため�
     例) ProxyDialogAutoFillerSetup.exe /SP- /VERYSILENT /LOADINF="ProxyDialogAutoFiller.inf"
 
     ■応答ファイル ProxyDialogAutoFiller.infはSetupファイルと同一フォルダーに設置するかフルパスを指定します。
+
+サイレントインストール完了後、`ProxyDialogAutoFiller.exe`は自動で起動します。
 
 \newpage
 # サイレント アンインストール手順（自動アンインストール）
@@ -227,9 +232,11 @@ ProxyDialogAutoFillerのアンインストールの必要はありません。�
 
     ![](user-guide/media/image19.png)
 
-以上で、バージョンアップ作業は完了です。
+　　「インストール後にプログラムを起動する」にチェックをすると、「完了」ボタンクリック後に`ProxyDialogAutoFiller.exe`が実行されます。
 
-バージョンアップ完了後、端末の再起動やログオンユーザーのサインアウト/サインインをすると、ProxyDialogAutoFiller.exeが自動で起動します。
+   「インストール後にプログラムを起動する」にチェックをしない場合、`ProxyDialogAutoFiller.exe`を起動させるために、端末の再起動かログオンユーザーのサインアウト/サインインが必要です。
+
+以上で、バージョンアップ作業は完了です。
 
 \newpage
 # モジュール構成
