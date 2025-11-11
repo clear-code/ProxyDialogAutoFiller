@@ -6,7 +6,6 @@ AppVerName=ProxyDialogAutoFiller
 VersionInfoVersion=1.0.0.0
 AppVersion=1.0.0.0
 AppMutex=ProxyDialogAutoFillerSetup
-;DefaultDirName=C:\ProxyDialogAutoFiller
 DefaultDirName={code:GetProgramFiles}\ProxyDialogAutoFiller
 Compression=lzma2
 SolidCompression=yes
@@ -54,6 +53,7 @@ Name: "{app}";Permissions: users-modify
 
 [Run] 
 Filename: "{sys}\icacls.exe";Parameters: """{app}\ProxyDialogAutoFiller.exe"" /inheritance:r"; Flags: runhidden shellexec
+Filename: "{app}\ProxyDialogAutoFiller.exe"; Description: "インストール後にプログラムを起動する"; Flags: postinstall nowait
 
 [UninstallRun]
 
