@@ -119,7 +119,9 @@ namespace ProxyDialogAutoFiller
                         {
                             // Section name is proxy host name.
                             // Check if the dialog contains the proxy host name.
-                            if (name.Contains(section.Name))
+                            string lowerName = name.ToLowerInvariant();
+                            string lowerSectionName = section.Name.ToLowerInvariant();
+                            if (lowerName.Contains(lowerSectionName))
                             {
                                 isTargetProxy = true;
                                 userName = section.UserName;
