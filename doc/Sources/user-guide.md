@@ -91,9 +91,11 @@ ProxyDialogAutoFillerを利用するために、別途ランタイムライブ�
 
     ![](user-guide/media/image9.png)
 
-6. インストーラーの実行が完了すると、スタートアッププログラムに`ProxyDialogAutoFiller`が登録されます。
+6. インストーラーの実行が完了すると、スタートアッププログラムに`ProxyDialogAutoFiller.exe`が登録されます。
 
 以上で、インストール作業は完了です。
+
+インストール完了後、端末の再起動やログオンユーザーのサインアウト/サインインをすると、ProxyDialogAutoFiller.exeが自動で起動します。
 
 \newpage
 # アンインストール手順
@@ -226,6 +228,8 @@ ProxyDialogAutoFillerのアンインストールの必要はありません。�
     ![](user-guide/media/image19.png)
 
 以上で、バージョンアップ作業は完了です。
+
+バージョンアップ完了後、端末の再起動やログオンユーザーのサインアウト/サインインをすると、ProxyDialogAutoFiller.exeが自動で起動します。
 
 \newpage
 # モジュール構成
