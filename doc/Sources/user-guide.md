@@ -70,28 +70,32 @@ ProxyDialogAutoFillerを利用するために、別途ランタイムライブ�
 
 1. ProxyDialogAutoFillerSetup.exeを実行します。
 
-    **■管理者権限で実行してください。**
-
-    ![](user-guide/media/image5.png)  
+   ![](user-guide/media/image5.png)  
+   
+   **■管理者権限で実行してください。**
 
 2. 「次へ」ボタンをクリックします。
 
-    ![](user-guide/media/image6.png)  
-    ■インストール先を変更する場合は、「参照」ボタンよりインストール先を変更します。
+   ![](user-guide/media/image6.png)  
+    
+   ■インストール先を変更する場合は、「参照」ボタンよりインストール先を変更します。
 
 3. 「次へ」ボタンをクリックします。
 
-    ![](user-guide/media/image7.png)
+   ![](user-guide/media/image7.png)
+    
+   ■フォルダーを変更する場合は、「参照」ボタンよりフォルダーを変更します。
 
 4. 「インストール」ボタンをクリックします。
 
-    ![](user-guide/media/image8.png)
+   ![](user-guide/media/image8.png)
 
 5. 「完了」ボタンをクリックします。
 
-    ![](user-guide/media/image9.png)
+   ![](user-guide/media/image9.png)
 
-　　「インストール後にプログラムを起動する」にチェックをすると、「完了」ボタンクリック後に`ProxyDialogAutoFiller.exe`が実行されます。
+   ■「インストール後にプログラムを起動する」にチェックをすると、「完了」ボタンクリック後に`ProxyDialogAutoFiller.exe`が実行されます。
+
 
 以上で、インストール作業は完了です。
 
@@ -212,29 +216,27 @@ ProxyDialogAutoFillerのアンインストールをサイレント実行する�
 
 ProxyDialogAutoFillerのアンインストールの必要はありません。上書きインストールを行ってください。  
 
-■マイナーバージョンアップの場合はアンインストールの必要はありません。
-
 ## バージョンアップ方法
 
 ### Windows 11環境のセットアップ例
 
 1. ProxyDialogAutoFillerSetup.exeを実行します。  
 
-    **■管理者権限で実行してください。**
+   **■管理者権限で実行してください。**
 
-    ![](user-guide/media/image5.png)
+   ![](user-guide/media/image5.png)
 
 2. 「インストール」ボタンをクリックします。
 
-    ![](user-guide/media/image18.png)
+   ![](user-guide/media/image18.png)
 
 3. 「完了」ボタンをクリックします。
 
-    ![](user-guide/media/image19.png)
+   ![](user-guide/media/image19.png)
 
-　　「インストール後にプログラムを起動する」にチェックをすると、「完了」ボタンクリック後に`ProxyDialogAutoFiller.exe`が実行されます。
+   ■ 「インストール後にプログラムを起動する」にチェックをすると、「完了」ボタンクリック後に`ProxyDialogAutoFiller.exe`が実行されます。
 
-   「インストール後にプログラムを起動する」にチェックをしない場合、`ProxyDialogAutoFiller.exe`を起動させるために、端末の再起動かログオンユーザーのサインアウト/サインインが必要です。
+   ■チェックをしない場合、`ProxyDialogAutoFiller.exe`を起動させるために、端末の再起動かログオンユーザーのサインアウト/サインインが必要です。
 
 以上で、バージョンアップ作業は完了です。
 
@@ -243,12 +245,12 @@ ProxyDialogAutoFillerのアンインストールの必要はありません。�
 
 ## ProxyDialogAutoFillerモジュール構成
 
-ProxyDialogAutoFiller インストーラーには以下のモジュールが含まれています。(合計 約15MB)
+ProxyDialogAutoFiller インストーラーには以下のモジュールが含まれています。(合計 約40KB)
 
 --------------------------------------------------------------------------------------
 ファイル名                            サイズ           概要
 ------------------------------------- ---------------- --------------------------------
-ProxyDialogAutoFiller.exe        約60KB           プロキシダイアログ自動入力ツール
+ProxyDialogAutoFiller.exe             約40KB           プロキシダイアログ自動入力ツール
 --------------------------------------------------------------------------------------
 
 # 設定概要
@@ -343,17 +345,17 @@ ADに所属している端末の設定を強制する場合、グループポリ
 以下の作業はすべて、作業環境にて、システム管理者が管理者ユーザーアカウントで実施します。
 
 1. 各端末からアクセス可能なファイル配布用サーバー上に、一般ユーザー権限で読み取り可能な、ファイル配布用フォルダーを作成します。  
-以下、コンピューター名/ホスト名が「fileserver」である Windowsファイル共有サーバーを使用し、ファイル配布用フォルダー名は「proxy-setting」を使用するものと仮定します。  
-この仮定に従い、ファイル共有サーバー上に作成された共有フォルダーのUNCパスが「`\\fileserver\proxy-setting\`」 となると仮定します。
+以下、コンピューター名/ホスト名が「fileserver」である Windowsファイル共有サーバーを使用し、ファイル配布用フォルダー名は「proxy-dialog-auto-filler」を使用するものと仮定します。  
+この仮定に従い、ファイル共有サーバー上に作成された共有フォルダーのUNCパスが「`\\fileserver\proxy-dialog-auto-filler\`」 となると仮定します。
 2. 強制したい設定がされた ProxySetting.ini ファイルを作成します。
 3. 作成したファイルを、1で作成したファイル配布用フォルダーにコピーします。
 前述の仮定に従い、ファイルの UNC パスは  
-「`\\fileserver\proxy-setting\ProxySetting.ini`」  
+「`\\fileserver\proxy-dialog-auto-filler\ProxySetting.ini`」  
 となると仮定します。
 4. 配置した各ファイルの「プロパティ」を開き、「セキュリティ」タブを選択して、当該ファイルが「Everyone」で読み取り可能な状態になっていることを確認します。  
 もしそのようになっていない場合は、「編集」ボタンをクリックし、開かれたダイアログ内で「追加」ボタンをクリックして、開かれたダイアログ内で「選択するオブジェクト名を入力してください」欄に「Everyone」と入力し、「OK」ボタンを押してダイアログを閉じる操作を3回繰り返して、ファイルを「Everyone」で読み取り可能な状態に設定します。
 5. 任意のADドメイン参加端末に一般ユーザーでログインし、3で配置したファイルを読み取れることを確認します。
-  * ProxySetting.ini（前述の仮定に従うと「`\\fileserver\proxy-setting\ProxySetting.ini`」）をメモ帳などで開き、内容を閲覧できることを確認します。
+  * ProxySetting.ini（前述の仮定に従うと「`\\fileserver\proxy-dialog-auto-filler\ProxySetting.ini`」）をメモ帳などで開き、内容を閲覧できることを確認します。
 6. ドメインコントローラーのグループポリシー管理コンソールで、対象の端末の一般ユーザーに適用されるGPOについて、 
 「ユーザーの構成」  
 →「基本設定」  
@@ -362,11 +364,11 @@ ADに所属している端末の設定を強制する場合、グループポリ
 を右クリックし「新規作成」から「ファイル」を選択します。
 7. 以下の通り設定します。
   * アクション：「置換」を選択。
-  * ソースファイル：3 で配置した「ProxySetting.ini」を、全端末から参照可能な UNCパスで指定。（例：「`\\fileserver\proxy-setting\ProxySetting.ini`」）
+  * ソースファイル：3 で配置した「ProxySetting.ini」を、全端末から参照可能な UNCパスで指定。（例：「`\\fileserver\proxy-dialog-auto-filler\ProxySetting.ini`」）
   * ターゲットファイル：「`C:\Program Files\ProxyDialogAutoFiller\ProxySetting.ini`」を指定。
   * 属性：「読み取り専用」のみにチェック。
 
-以上の手順により、組織内サーバーに設置したProxySetting.iniが、各端末に導入されます。
+以上の手順により、組織内サーバーに設置した`ProxySetting.ini`が、各端末に導入されます。
 
 # プロキシーのユーザー認証ダイアログの自動入力動作確認
 
@@ -374,7 +376,7 @@ ADに所属している端末の設定を強制する場合、グループポリ
 
 1. 使用する端末にプロキシの設定を行います。
 2. ログオンユーザーのサインアウト/サインインを行います。
-  * これは、スタートアッププログラムで起動するProxyDialogAutoFiller.exeを動作させるための対処です。
+  * これは、スタートアッププログラムで起動する`ProxyDialogAutoFiller.exe`を動作させるための対処です。
 
 ## Microsoft Edgeでの確認
 
