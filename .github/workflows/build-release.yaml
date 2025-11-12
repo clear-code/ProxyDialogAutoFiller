@@ -6,8 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: microsoft/setup-msbuild@v2
-      - name: Compile x64
-        run: msbuild /p:Configuration=Release /p:Platform=x64
+      - name: Compile
+        run: msbuild /p:Configuration=Release /p:Platform="Any CPU"
       - name: Make Installer
         run: iscc.exe ProxyDialogAutoFiller.iss
       - name: Upload Binaries
