@@ -182,26 +182,25 @@ namespace ProxyDialogAutoFiller
                 // ユーザー名、パスワードに誤りがあった場合などに、短時間で連続してダイアログの表示とOKが繰り返され、ユーザーが対処できなくなる可能性がある。
                 // そのため、ダイアログが表示されている場合、ここで15秒間待機し、ダイアログが閉じられなかった場合にユーザーがキャンセルや正しいユーザー名
                 // パスワードが入力できるようにする。
-                for (int i = 0; i < 15; i++)
+                for (int i = 0; i < 30; i++)
                 {
+                    Task.Delay(500).Wait();
                     proxyDialogElement = targetRootElement.FindFirst(TreeScope.Descendants, proxyDialogCondition);
                     if (proxyDialogElement == null)
                     {
                         break;
                     }
                     // ChromeでloginButton.Invoke()の実行までが早すぎて応答しないことがあるので
-                    // ここで一度だけリトライする。
-                    if (i == 0)
+                    // ここで二回までリトライする。
+                    if (i < 2)
                     {
                         try
                         {
-                            Task.Delay(500).Wait();
                             loginButton.Invoke();
                             context.Logger.Log($"Retry to click login button.");
                         }
                         catch { }
                     }
-                    Task.Delay(1000).Wait();
                 }
 
                 if (proxyDialogElement != null)
