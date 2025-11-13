@@ -34,9 +34,9 @@ namespace ProxyDialogAutoFiller
             EnableLogging = false;
             try
             {
-                LogFileNameBase =  "ProxyHelper";
+                LogFileNameBase =  "ProxyDialogAutoFiller";
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                var logDirectory = Path.Combine(appDataPath, "ProxyHelper");
+                var logDirectory = Path.Combine(appDataPath, "ProxyDialogAutoFiller");
                 if (!Directory.Exists(logDirectory))
                 {
                     Directory.CreateDirectory(logDirectory);
