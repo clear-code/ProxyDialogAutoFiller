@@ -75,3 +75,8 @@ begin
 	TaskKill('ProxyDialogAutoFiller.exe');
 	Result := True; 
 end; 
+function InitializeUninstall():Boolean;
+begin 
+	TaskKill('ProxyDialogAutoFiller.exe');
+	Result := True; 
+end; 
