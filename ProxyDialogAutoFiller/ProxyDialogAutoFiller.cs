@@ -101,7 +101,6 @@ namespace ProxyDialogAutoFiller
                 var proxyDialogElement = targetRootElement.FindFirst(TreeScope.Descendants, proxyDialogCondition);
                 if (proxyDialogElement == null)
                 {
-                    context.Logger.Log($"Not found proxy dialog with a specified title.");
                     return;
                 }
                 context.Logger.Log($"Found proxy dialog.");
