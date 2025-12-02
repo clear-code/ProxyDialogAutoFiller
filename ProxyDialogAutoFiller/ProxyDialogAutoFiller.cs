@@ -30,8 +30,7 @@ namespace ProxyDialogAutoFiller
             {
                 foreach (var targetDefinition in targetDefinitions)
                 {
-                    //ブラウザのプロセスのうち、メインウィンドウがあるものに絞り込み
-                    var filteredElements = Process.GetProcessesByName(targetDefinition.ProcessName).Where(_ => _.MainWindowHandle != IntPtr.Zero);
+                    var filteredElements = Process.GetProcessesByName(targetDefinition.ProcessName);
                     foreach (var filteredElement in filteredElements)
                     {
                         var targetPid = filteredElement.Id;
@@ -102,6 +101,7 @@ namespace ProxyDialogAutoFiller
                 var proxyDialogElement = targetRootElement.FindFirst(TreeScope.Descendants, proxyDialogCondition);
                 if (proxyDialogElement == null)
                 {
+                    context.Logger.Log($"Not found proxy dialog with a specified title.");
                     return;
                 }
                 context.Logger.Log($"Found proxy dialog.");
