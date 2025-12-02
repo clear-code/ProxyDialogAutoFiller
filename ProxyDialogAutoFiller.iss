@@ -3,8 +3,8 @@
 [Setup]
 AppName=ProxyDialogAutoFiller
 AppVerName=ProxyDialogAutoFiller
-VersionInfoVersion=1.0.0.0
-AppVersion=1.0.0.0
+VersionInfoVersion=1.1.0.0
+AppVersion=1.1.0.0
 AppMutex=ProxyDialogAutoFillerSetup
 DefaultDirName={code:GetProgramFiles}\ProxyDialogAutoFiller
 Compression=lzma2
@@ -23,7 +23,7 @@ UninstallDisplayIcon={app}\ProxyDialogAutoFiller.exe
 Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; ValueType: string; ValueName: "Path"; ValueData: "{app}\"
 Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; ValueType: string; ValueName: "ClientType"; ValueData: ""
-Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; ValueType: string; ValueName: "Version"; ValueData: "1.0.0.0"
+Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; ValueType: string; ValueName: "Version"; ValueData: "1.1.0.0"
 Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; ValueType: string; ValueName: "Rulefile"; ValueData: "{app}\ProxySetting.ini"
 Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; ValueType: string; ValueName: "RCAPfile"; ValueData: "{app}\ResourceCap.ini"
 Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; ValueType: string; ValueName: "ExtensionExecfile"; ValueData: "{app}\ProxyDialogAutoFiller.exe"
@@ -31,7 +31,7 @@ Root: HKLM; Subkey: "Software\ProxyDialogAutoFiller"; ValueType: string; ValueNa
 Root: HKLM; Subkey: "Software\WOW6432Node\ProxyDialogAutoFiller"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\WOW6432Node\ProxyDialogAutoFiller"; ValueType: string; ValueName: "Path"; ValueData: "{app}\"
 Root: HKLM; Subkey: "Software\WOW6432Node\ProxyDialogAutoFiller"; ValueType: string; ValueName: "ClientType"; ValueData: ""
-Root: HKLM; Subkey: "Software\WOW6432Node\ProxyDialogAutoFiller"; ValueType: string; ValueName: "Version"; ValueData: "1.0.0.0"
+Root: HKLM; Subkey: "Software\WOW6432Node\ProxyDialogAutoFiller"; ValueType: string; ValueName: "Version"; ValueData: "1.1.0.0"
 Root: HKLM; Subkey: "Software\WOW6432Node\ProxyDialogAutoFiller"; ValueType: string; ValueName: "Rulefile"; ValueData: "{app}\ProxySetting.ini"
 Root: HKLM; Subkey: "Software\WOW6432Node\ProxyDialogAutoFiller"; ValueType: string; ValueName: "RCAPfile"; ValueData: "{app}\ResourceCap.ini"
 Root: HKLM; Subkey: "Software\WOW6432Node\ProxyDialogAutoFiller"; ValueType: string; ValueName: "ExtensionExecfile"; ValueData: "{app}\ProxyDialogAutoFiller.exe"
