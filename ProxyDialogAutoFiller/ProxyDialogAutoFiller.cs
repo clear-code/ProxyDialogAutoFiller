@@ -7,6 +7,7 @@ Copyright (c) 2025 ClearCode Inc.
 */
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Automation;
@@ -30,16 +31,16 @@ namespace ProxyDialogAutoFiller
             {
                 foreach (var targetDefinition in targetDefinitions)
                 {
-                    var filteredElements = Process.GetProcessesByName(targetDefinition.ProcessName);
+                    //ブラウザのプロセスのうち、メインウィンドウがあるものに絞り込み
+                    var filteredElements = Process.GetProcessesByName(targetDefinition.ProcessName).Where(_ => _.MainWindowHandle != IntPtr.Zero);
+
                     foreach (var filteredElement in filteredElements)
                     {
                         var targetPid = filteredElement.Id;
-                        var windowCondition = new AndCondition(
-                            new PropertyCondition(AutomationElement.ProcessIdProperty, targetPid),
-                            new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Window));
-                        var targetElement = desktop.FindFirst(TreeScope.Children, windowCondition);
+                        var targetElement = desktop.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.ProcessIdProperty, targetPid));
                         if (targetElement == null)
                         {
+                            context.Logger.Log($"Empty element.");
                             continue;
                         }
                         PrintControlIdentifiers(context, targetElement, 0);
@@ -57,6 +58,7 @@ namespace ProxyDialogAutoFiller
             {
                 var ind = new string(' ', indent * 2);
                 Console.WriteLine($"{ind}- {element.Current.ControlType.ProgrammaticName} : {element.Current.Name}");
+                context.Logger.Log($"{ind}- {element.Current.ControlType.ProgrammaticName} : {element.Current.Name}");
                 var children = element.FindAll(TreeScope.Children, Condition.TrueCondition);
                 foreach (AutomationElement child in children)
                 {
@@ -75,41 +77,51 @@ namespace ProxyDialogAutoFiller
             object valuePatternObj;
             if (element.TryGetCurrentPattern(ValuePattern.Pattern, out valuePatternObj))
             {
-                element.SetFocus();
                 (valuePatternObj as ValuePattern).SetValue(value);
             }
             else
             {
                 // フォーカス後にSendKeys（WinFormsやWPF参照）などで文字列を入力
-                element.SetFocus();
+                try
+                {
+                    element.SetFocus();
+                }
+                catch
+                {
+                    // ignore set focus error
+                }
                 System.Windows.Forms.SendKeys.SendWait(value);
             }
         }
 
         internal static void LoginToProxy(RuntimeContext context, AutomationElement targetRootElement, TargetDefinition dialogDefinition)
         {
-            if(context.Config.SectionList == null || context.Config.SectionList.Count == 0)
+            if (context.Config.SectionList == null || context.Config.SectionList.Count == 0)
             {
+                context.Logger.Log($"Empty config.");
                 return;
             }
             try
             {
                 var proxyDialogNameCondition = new PropertyCondition(AutomationElement.NameProperty, dialogDefinition.DialogTitleName);
+                var targetControlTypeCondition = new OrCondition(
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Window),
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
                 var proxyDialogCondition = new AndCondition(
                     proxyDialogNameCondition,
-                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Window));
-                var proxyDialogElement = targetRootElement.FindFirst(TreeScope.Descendants, proxyDialogCondition);
+                    targetControlTypeCondition);
+                var proxyDialogElement = targetRootElement.FindFirst(TreeScope.Subtree, proxyDialogCondition);
                 if (proxyDialogElement == null)
                 {
                     return;
                 }
                 context.Logger.Log($"Found proxy dialog.");
-                var textTypeDescendants = proxyDialogElement.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Text));
+                var textTypeDescendants = proxyDialogElement.FindAll(TreeScope.Subtree, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Text));
 
                 bool isTargetProxy = false;
                 string userName = "";
                 string password = "";
-                foreach(AutomationElement textTypeDescendant in textTypeDescendants)
+                foreach (AutomationElement textTypeDescendant in textTypeDescendants)
                 {
                     string name = textTypeDescendant.Current.Name;
                     if (!string.IsNullOrEmpty(name) && name.Contains("プロキシ"))
@@ -139,34 +151,38 @@ namespace ProxyDialogAutoFiller
                 {
                     return;
                 }
-
+                context.Logger.Log($"Found proxy dialog matching to config.");
                 var userNameEditCondition = new AndCondition(
                     new PropertyCondition(AutomationElement.NameProperty, dialogDefinition.UserNameInputName),
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Edit));
-                var userNameEditElement = proxyDialogElement.FindFirst(TreeScope.Descendants, userNameEditCondition);
+                var userNameEditElement = proxyDialogElement.FindFirst(TreeScope.Subtree, userNameEditCondition);
                 if (userNameEditElement == null)
                 {
+                    context.Logger.Log($"User name edit not found.");
                     return;
                 }
                 SendValue(userNameEditElement, userName);
 
+                context.Logger.Log($"Set username.");
                 var passwordEditCondition = new AndCondition(
                     new PropertyCondition(AutomationElement.NameProperty, dialogDefinition.PasswordInputName),
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Edit));
-                var passwordEditElement = proxyDialogElement.FindFirst(TreeScope.Descendants, passwordEditCondition);
+                var passwordEditElement = proxyDialogElement.FindFirst(TreeScope.Subtree, passwordEditCondition);
                 if (passwordEditElement == null)
                 {
+                    context.Logger.Log($"Password edit not found.");
                     return;
                 }
                 SendValue(passwordEditElement, password);
-
+                context.Logger.Log($"Set password.");
                 var loginButtonNameCondition = new PropertyCondition(AutomationElement.NameProperty, dialogDefinition.LoginButtonName);
                 var loginButtonCondition = new AndCondition(
                     loginButtonNameCondition,
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
-                var loginButtonElement = proxyDialogElement.FindFirst(TreeScope.Descendants, loginButtonCondition);
+                var loginButtonElement = proxyDialogElement.FindFirst(TreeScope.Subtree, loginButtonCondition);
                 if (loginButtonElement == null)
                 {
+                    context.Logger.Log($"Login button not found.");
                     return;
                 }
                 InvokePattern loginButton = loginButtonElement.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
@@ -174,19 +190,31 @@ namespace ProxyDialogAutoFiller
                 {
                     return;
                 }
+
                 Task.Delay(50).Wait();
                 loginButton.Invoke();
                 context.Logger.Log($"Click login button.");
+
                 // プロキシーダイアログが消えていることを確認する。
                 // ユーザー名、パスワードに誤りがあった場合などに、短時間で連続してダイアログの表示とOKが繰り返され、ユーザーが対処できなくなる可能性がある。
                 // そのため、ダイアログが表示されている場合、ここで15秒間待機し、ダイアログが閉じられなかった場合にユーザーがキャンセルや正しいユーザー名
                 // パスワードが入力できるようにする。
+                bool isProxyDialogClosed = false;
                 for (int i = 0; i < 30; i++)
                 {
                     Task.Delay(500).Wait();
-                    proxyDialogElement = targetRootElement.FindFirst(TreeScope.Descendants, proxyDialogCondition);
-                    if (proxyDialogElement == null)
+                    // ログインボタンが消えていたらダイアログも消えていると判断する。
+                    // このあとログインボタンを押すことから、ログインボタンを再利用している。
+                    try
                     {
+                        _ = loginButtonElement.Current.ItemType;
+                        _ = loginButtonElement.Current.Name;
+                        _ = loginButtonElement.Current.IsOffscreen;
+                    }
+                    catch
+                    {
+                        context.Logger.Log($"login button closed.");
+                        isProxyDialogClosed = true;
                         break;
                     }
                     // ChromeでloginButton.Invoke()の実行までが早すぎて応答しないことがあるので
@@ -198,17 +226,23 @@ namespace ProxyDialogAutoFiller
                             loginButton.Invoke();
                             context.Logger.Log($"Retry to click login button.");
                         }
-                        catch { }
+                        catch
+                        {
+                            // ログインボタンのInvokeに失敗した場合、ログインボタンが消えていると判断してループを抜ける。
+                            context.Logger.Log($"Failed to invoke button");
+                            isProxyDialogClosed = true;
+                            break;
+                        }
                     }
                 }
 
-                if (proxyDialogElement != null)
+                if (isProxyDialogClosed)
                 {
-                    context.Logger.Log($"Dialog not closed. Maybe failed to login to the proxy.");
+                    context.Logger.Log($"Success to login to the proxy.");
                 }
                 else
                 {
-                    context.Logger.Log($"Success to login to the proxy.");
+                    context.Logger.Log($"Dialog not closed. Maybe failed to login to the proxy.");
                 }
             }
             catch (Exception ex)
