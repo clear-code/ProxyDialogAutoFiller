@@ -206,6 +206,7 @@ namespace ProxyDialogAutoFiller
                     proxyDialogElement = targetRootElement.FindFirst(TreeScope.Descendants, proxyDialogCondition);
                     if (proxyDialogElement == null)
                     {
+                        context.Logger.Log($"Proxy dialog not found.");
                         isProxyDialogClosed = true;
                         break;
                     }
@@ -219,6 +220,7 @@ namespace ProxyDialogAutoFiller
                     loginButton = loginButtonElement.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
                     if (loginButton == null)
                     {
+                        context.Logger.Log($"Cannot cast to InvokePattern.");
                         isProxyDialogClosed = true;
                         break;
                     }
