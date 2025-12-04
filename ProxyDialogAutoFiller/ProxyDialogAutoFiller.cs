@@ -58,7 +58,6 @@ namespace ProxyDialogAutoFiller
             {
                 var ind = new string(' ', indent * 2);
                 Console.WriteLine($"{ind}- {element.Current.ControlType.ProgrammaticName} : {element.Current.Name}");
-                context.Logger.Log($"{ind}- {element.Current.ControlType.ProgrammaticName} : {element.Current.Name}");
                 var children = element.FindAll(TreeScope.Children, Condition.TrueCondition);
                 foreach (AutomationElement child in children)
                 {
