@@ -106,17 +106,17 @@ namespace ProxyDialogAutoFiller
                 var proxyDialogNameCondition = new PropertyCondition(AutomationElement.NameProperty, dialogDefinition.DialogTitleName);
                 var targetControlTypeCondition = new OrCondition(
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Window),
-                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Custom));
                 var proxyDialogCondition = new AndCondition(
-                    proxyDialogNameCondition,
-                    targetControlTypeCondition);
+                    targetControlTypeCondition,
+                    proxyDialogNameCondition);
                 var proxyDialogElement = targetRootElement.FindFirst(TreeScope.Subtree, proxyDialogCondition);
                 if (proxyDialogElement == null)
                 {
                     return;
                 }
                 context.Logger.Log($"Found proxy dialog.");
-                var textTypeDescendants = proxyDialogElement.FindAll(TreeScope.Subtree, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Text));
+                var textTypeDescendants = proxyDialogElement.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Text));
 
                 bool isTargetProxy = false;
                 string userName = "";
@@ -155,7 +155,7 @@ namespace ProxyDialogAutoFiller
                 var userNameEditCondition = new AndCondition(
                     new PropertyCondition(AutomationElement.NameProperty, dialogDefinition.UserNameInputName),
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Edit));
-                var userNameEditElement = proxyDialogElement.FindFirst(TreeScope.Subtree, userNameEditCondition);
+                var userNameEditElement = proxyDialogElement.FindFirst(TreeScope.Descendants, userNameEditCondition);
                 if (userNameEditElement == null)
                 {
                     context.Logger.Log($"User name edit not found.");
@@ -167,7 +167,7 @@ namespace ProxyDialogAutoFiller
                 var passwordEditCondition = new AndCondition(
                     new PropertyCondition(AutomationElement.NameProperty, dialogDefinition.PasswordInputName),
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Edit));
-                var passwordEditElement = proxyDialogElement.FindFirst(TreeScope.Subtree, passwordEditCondition);
+                var passwordEditElement = proxyDialogElement.FindFirst(TreeScope.Descendants, passwordEditCondition);
                 if (passwordEditElement == null)
                 {
                     context.Logger.Log($"Password edit not found.");
@@ -179,7 +179,7 @@ namespace ProxyDialogAutoFiller
                 var loginButtonCondition = new AndCondition(
                     loginButtonNameCondition,
                     new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
-                var loginButtonElement = proxyDialogElement.FindFirst(TreeScope.Subtree, loginButtonCondition);
+                var loginButtonElement = proxyDialogElement.FindFirst(TreeScope.Descendants, loginButtonCondition);
                 if (loginButtonElement == null)
                 {
                     context.Logger.Log($"Login button not found.");
@@ -204,19 +204,26 @@ namespace ProxyDialogAutoFiller
                 {
                     Task.Delay(500).Wait();
                     // ログインボタンが消えていたらダイアログも消えていると判断する。
-                    // このあとログインボタンを押すことから、ログインボタンを再利用している。
-                    try
+                    proxyDialogElement = targetRootElement.FindFirst(TreeScope.Descendants, proxyDialogCondition);
+                    if (proxyDialogElement == null)
                     {
-                        _ = loginButtonElement.Current.ItemType;
-                        _ = loginButtonElement.Current.Name;
-                        _ = loginButtonElement.Current.IsOffscreen;
-                    }
-                    catch
-                    {
-                        context.Logger.Log($"login button closed.");
                         isProxyDialogClosed = true;
                         break;
                     }
+                    loginButtonElement = proxyDialogElement.FindFirst(TreeScope.Descendants, loginButtonCondition);
+                    if (loginButtonElement == null)
+                    {
+                        context.Logger.Log($"Login button not found.");
+                        isProxyDialogClosed = true;
+                        break;
+                    }
+                    loginButton = loginButtonElement.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
+                    if (loginButton == null)
+                    {
+                        isProxyDialogClosed = true;
+                        break;
+                    }
+
                     // ChromeでloginButton.Invoke()の実行までが早すぎて応答しないことがあるので
                     // ここで二回までリトライする。
                     if (i < 2)
