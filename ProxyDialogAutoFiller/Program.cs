@@ -41,7 +41,10 @@ namespace ProxyDialogAutoFiller
                 // ダイアログの監視を開始
                 try
                 {
-                    ProxyDialogAutoFiller.WatchDialog(new RuntimeContext());
+                    var context = new RuntimeContext();
+                    // 想定外の例外でプロセスが終了する場合に、原因を調べられるようログに出力する
+                    AppDomain.CurrentDomain.UnhandledException += (sender, e) => context.Logger.Log($"Unhandled exception: {e.ExceptionObject}");
+                    ProxyDialogAutoFiller.WatchDialog(context);
                 }
                 finally
                 {

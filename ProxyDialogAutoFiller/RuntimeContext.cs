@@ -17,8 +17,17 @@ namespace ProxyDialogAutoFiller
 
         internal RuntimeContext()
         {
-            Config = ConfigLoader.LoadConfig();
+            // 設定ファイルの読み込みに失敗した場合もログに出力できるよう、先にLoggerを作成する
             Logger = new Logger();
+            try
+            {
+                Config = ConfigLoader.LoadConfig();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Failed to load the config file: {ex}");
+                throw;
+            }
         }
     }
 }
