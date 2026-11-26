@@ -6,9 +6,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Copyright (c) 2025 ClearCode Inc.
 */
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Forms;
@@ -21,12 +23,13 @@ namespace ProxyDialogAutoFiller
     {
         internal static void WatchDialog(RuntimeContext context)
         {
-            AutomationElement desktop = AutomationElement.RootElement;
             var targetDefinitions = new TargetDefinition[]
             {
                 new EdgeTargetDefinition(),
                 new ChromeTargetDefinition(),
             };
+            // 確認中のウィンドウ（キー：ウィンドウハンドル、値：確認処理のスレッド）
+            var checkingThreads = new Dictionary<IntPtr, Thread>();
             while (true)
             {
                 foreach (var targetDefinition in targetDefinitions)
@@ -36,19 +39,55 @@ namespace ProxyDialogAutoFiller
 
                     foreach (var filteredElement in filteredElements)
                     {
-                        var targetPid = filteredElement.Id;
-                        var targetElement = desktop.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.ProcessIdProperty, targetPid));
-                        if (targetElement == null)
+                        // 終了処理中のブラウザーのウィンドウにUI Automationで問い合わせると、そのプロセスが
+                        // 終了するまで（数十秒～数分）応答が返らない。1つのスレッドで順に確認すると、その間は
+                        // 新しく起動したブラウザーのプロキシダイアログも確認できなくなるため、ウィンドウごとに
+                        // 別スレッドで確認する。前回の確認が終わっていないウィンドウは、その周回では確認しない。
+                        var windowHandle = filteredElement.MainWindowHandle;
+                        if (checkingThreads.TryGetValue(windowHandle, out var checkingThread) && checkingThread.IsAlive)
                         {
-                            context.Logger.Log($"Empty element.");
                             continue;
                         }
-                        PrintControlIdentifiers(context, targetElement, 0);
-                        LoginToProxy(context, targetElement, targetDefinition);
+                        checkingThread = new Thread(() => CheckWindow(context, windowHandle, targetDefinition))
+                        {
+                            IsBackground = true,
+                        };
+                        // 従来のメインスレッドと同じくSTAで動かす（SendKeysを使うため）
+                        checkingThread.SetApartmentState(ApartmentState.STA);
+                        checkingThread.Start();
+                        checkingThreads[windowHandle] = checkingThread;
                     }
                 }
+                foreach (var finishedWindow in checkingThreads.Where(_ => !_.Value.IsAlive).Select(_ => _.Key).ToList())
+                {
+                    checkingThreads.Remove(finishedWindow);
+                }
+
+                // 使い終わったUI Automationの要素を、ブラウザーがまだ動いているうちに解放する。
+                // 要素の解放がブラウザーの終了処理中に行われると、そのプロセスが終了するまで解放処理が
+                // ブロックし、それに巻き込まれて新しいウィンドウへのUI Automationの呼び出しも待たされるため。
+                GC.Collect();
+
                 Task.Delay(500).Wait();
             }
+        }
+
+        private static void CheckWindow(RuntimeContext context, IntPtr windowHandle, TargetDefinition targetDefinition)
+        {
+            AutomationElement targetElement;
+            try
+            {
+                // デスクトップ全体をUI Automationで検索すると、終了処理中のブラウザーのウィンドウへの
+                // 問い合わせに巻き込まれることがあるため、ウィンドウハンドルから直接取得する。
+                targetElement = AutomationElement.FromHandle(windowHandle);
+            }
+            catch (Exception)
+            {
+                // 確認の前にウィンドウが閉じられた場合など
+                return;
+            }
+            PrintControlIdentifiers(context, targetElement, 0);
+            LoginToProxy(context, targetElement, targetDefinition);
         }
 
         [Conditional("DEBUG")]
